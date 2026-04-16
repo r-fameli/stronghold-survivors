@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer IO Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #gameCanvas {
+            border: 2px solid #ffffff;
+            background-color: #000000;
+            margin: 20px 0;
+        }
+        
+        #status {
+            font-size: 18px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .controls h3 {
+            margin: 10px 0;
+        }
+        
+        .controls p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multiplayer IO Game</h1>
+    <div id="status">Connecting...</div>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div class="controls">
+        <h3>Controls</h3>
+        <p>Arrow Keys or WASD to move</p>
+        <p>Green square = You</p>
+        <p>Red squares = Other players</p>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bundle.js"></script>
+</body>
+</html>
