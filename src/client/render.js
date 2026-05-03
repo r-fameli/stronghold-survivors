@@ -24,9 +24,10 @@ function setCanvasDimensions() {
 window.addEventListener('resize', debounce(40, setCanvasDimensions));
 
 let animationFrameRequestId;
+let showHitboxes = false;
 
 function render() {
-  const { me, others, bullets } = getCurrentState();
+  const { me, others, bullets, castles } = getCurrentState();
   if (me) {
     // Draw background
     renderBackground(me.x, me.y);
@@ -36,12 +37,29 @@ function render() {
     context.lineWidth = 1;
     context.strokeRect(canvas.width / 2 - me.x, canvas.height / 2 - me.y, MAP_SIZE, MAP_SIZE);
 
+    // Draw all castles
+    if (castles) {
+      castles.forEach(renderCastle.bind(null, me));
+    }
+
     // Draw all bullets
     bullets.forEach(renderBullet.bind(null, me));
 
     // Draw all players
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
+
+    // Draw hitboxes if enabled
+    if (showHitboxes) {
+      if (castles) {
+        castles.forEach(renderHitbox.bind(null, me));
+      }
+      others.forEach(renderHitbox.bind(null, me));
+      renderHitbox(me, me);
+    }
+
+    // Draw minimap
+    renderMinimap(me, others, castles);
   }
 
   // Rerun this render function on the next frame
@@ -101,6 +119,40 @@ function renderPlayer(me, player) {
   );
 }
 
+function renderCastle(me, castle) {
+  const { x, y } = castle;
+  const canvasX = canvas.width / 2 + x - me.x;
+  const canvasY = canvas.height / 2 + y - me.y;
+
+  // Draw castle
+  context.drawImage(
+    getAsset('castle.png'),
+    canvasX - 100,
+    canvasY - 100,
+    200,
+    200,
+  );
+}
+
+function renderHitbox(me, object) {
+  const { x, y } = object;
+  let radius = PLAYER_RADIUS;
+  
+  if (object.radius) {
+    radius = object.radius;
+  }
+
+  const canvasX = canvas.width / 2 + x - me.x;
+  const canvasY = canvas.height / 2 + y - me.y;
+
+  // Draw hitbox outline
+  context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+  context.lineWidth = 2;
+  context.beginPath();
+  context.arc(canvasX, canvasY, radius, 0, 2 * Math.PI);
+  context.stroke();
+}
+
 function renderBullet(me, bullet) {
   const { x, y } = bullet;
   context.drawImage(
@@ -110,6 +162,56 @@ function renderBullet(me, bullet) {
     BULLET_RADIUS * 2,
     BULLET_RADIUS * 2,
   );
+}
+
+function renderMinimap(me, others, castles) {
+  const minimapSize = 150;
+  const minimapX = canvas.width - minimapSize - 10;
+  const minimapY = canvas.height - minimapSize - 10;
+  const scale = minimapSize / MAP_SIZE;
+
+  // Draw minimap background
+  context.fillStyle = 'black';
+  context.fillRect(minimapX, minimapY, minimapSize, minimapSize);
+
+  // Draw minimap border
+  context.strokeStyle = 'white';
+  context.lineWidth = 2;
+  context.strokeRect(minimapX, minimapY, minimapSize, minimapSize);
+
+  // Draw castle in center of minimap
+  if (castles && castles.length > 0) {
+    context.fillStyle = 'blue';
+    context.beginPath();
+    context.arc(
+      minimapX + minimapSize / 2,
+      minimapY + minimapSize / 2,
+      5,
+      0,
+      2 * Math.PI
+    );
+    context.fill();
+  }
+
+  // Draw other players as green dots
+  others.forEach(player => {
+    const minimapPlayerX = minimapX + player.x * scale;
+    const minimapPlayerY = minimapY + player.y * scale;
+    
+    context.fillStyle = 'green';
+    context.beginPath();
+    context.arc(minimapPlayerX, minimapPlayerY, 2, 0, 2 * Math.PI);
+    context.fill();
+  });
+
+  // Draw player as white dot
+  const minimapPlayerX = minimapX + me.x * scale;
+  const minimapPlayerY = minimapY + me.y * scale;
+  
+  context.fillStyle = 'white';
+  context.beginPath();
+  context.arc(minimapPlayerX, minimapPlayerY, 3, 0, 2 * Math.PI);
+  context.fill();
 }
 
 function renderMainMenu() {
@@ -134,4 +236,14 @@ export function startRendering() {
 export function stopRendering() {
   cancelAnimationFrame(animationFrameRequestId);
   animationFrameRequestId = requestAnimationFrame(renderMainMenu);
+}
+
+// Toggle hitbox visibility
+export function toggleHitboxes() {
+  showHitboxes = !showHitboxes;
+}
+
+// Check if hitboxes are currently visible
+export function areHitboxesVisible() {
+  return showHitboxes;
 }

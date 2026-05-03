@@ -1,11 +1,11 @@
 const Constants = require('../shared/constants');
 
 // Returns an array of bullets to be destroyed.
-function applyCollisions(players, bullets) {
+function applyCollisions(players, bullets, castles) {
   const destroyedBullets = [];
+  
+  // Bullet-player collisions
   for (let i = 0; i < bullets.length; i++) {
-    // Look for a player (who didn't create the bullet) to collide each bullet with.
-    // As soon as we find one, break out of the loop to prevent double counting a bullet.
     for (let j = 0; j < players.length; j++) {
       const bullet = bullets[i];
       const player = players[j];
@@ -19,6 +19,24 @@ function applyCollisions(players, bullets) {
       }
     }
   }
+  
+  // Player-castle collisions (prevent movement into castle)
+  for (let i = 0; i < players.length; i++) {
+    for (let j = 0; j < castles.length; j++) {
+      const player = players[i];
+      const castle = castles[j];
+      const distance = player.distanceTo(castle);
+      
+      if (distance < Constants.PLAYER_RADIUS + castle.radius) {
+        // Push player away from castle
+        const angle = Math.atan2(player.y - castle.y, player.x - castle.x);
+        const targetDistance = Constants.PLAYER_RADIUS + castle.radius;
+        player.x = castle.x + Math.cos(angle) * targetDistance;
+        player.y = castle.y + Math.sin(angle) * targetDistance;
+      }
+    }
+  }
+  
   return destroyedBullets;
 }
 
