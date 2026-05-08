@@ -12,14 +12,16 @@ Gameplay is cooperative. People will go around together to make sure susceptible
 
 ## Dev Commands
 
-Start client:
+Setup:
+
+```powershell
+npm install
+```
+
+Start client and backend server (start works as well):
 
 ```powershell
 npm run dev
 ```
 
-Start backend server:
-
-```powershell
-
-```
+This should start the client in localhost:3000
