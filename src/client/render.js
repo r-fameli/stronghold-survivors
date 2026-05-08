@@ -3,6 +3,7 @@
 import { debounce } from 'throttle-debounce';
 import { getAsset } from './assets';
 import { getCurrentState } from './state';
+import input from './input';
 
 const Constants = require('../shared/constants');
 
@@ -27,6 +28,9 @@ let animationFrameRequestId;
 let showHitboxes = false;
 
 function render() {
+  // Update input state before rendering
+  input.update();
+  
   const { me, others, bullets, castles } = getCurrentState();
   if (me) {
     // Draw background
@@ -102,21 +106,7 @@ function renderPlayer(me, player) {
   );
   context.restore();
 
-  // Draw health bar
-  context.fillStyle = 'white';
-  context.fillRect(
-    canvasX - PLAYER_RADIUS,
-    canvasY + PLAYER_RADIUS + 8,
-    PLAYER_RADIUS * 2,
-    2,
-  );
-  context.fillStyle = 'red';
-  context.fillRect(
-    canvasX - PLAYER_RADIUS + PLAYER_RADIUS * 2 * player.hp / PLAYER_MAX_HP,
-    canvasY + PLAYER_RADIUS + 8,
-    PLAYER_RADIUS * 2 * (1 - player.hp / PLAYER_MAX_HP),
-    2,
-  );
+  
 }
 
 function renderCastle(me, castle) {
