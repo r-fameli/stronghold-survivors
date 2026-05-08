@@ -24,22 +24,23 @@ let lastServerUpdate = Date.now();
 // The current input state
 const keys = {};
 
-// Handle keydown events
-window.addEventListener('keydown', (e) => {
-  keys[e.key] = true;
-  
-  // Toggle hitboxes with 'h' key
-  if (e.key === 'h' || e.key === 'H') {
-    toggleHitboxes();
-    console.log('Hitboxes', areHitboxesVisible() ? 'enabled' : 'disabled');
-  }
-});
+// Whether we're capturing input or not
+let capturingKeyInput = false;
 
 // Handle keyup events
 window.addEventListener('keyup', (e) => {
   keys[e.key] = false;
 });
 
+function onKeyDown(e) {
+  keys[e.key] = true;
+
+  // Toggle hitboxes with 'h' key
+  if (e.key === 'h' || e.key === 'H') {
+    toggleHitboxes();
+    console.log('Hitboxes', areHitboxesVisible() ? 'enabled' : 'disabled');
+  }
+}
 
 // Update the player's position based on input
 function update() {
@@ -106,6 +107,15 @@ function reset() {
   targetPosition = { x: 0, y: 0 };
   direction = 0;
   lastServerUpdate = Date.now;
+}
+
+export function startCapturingInput() {
+  // Handle keydown events
+  window.addEventListener('keydown', onKeyDown);
+}
+
+export function stopCapturingInput() {
+  window.removeEventListener('keydown', onKeyDown);
 }
 
 export default {
