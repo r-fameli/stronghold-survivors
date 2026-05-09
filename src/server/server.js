@@ -49,5 +49,6 @@ function handleInput(dir) {
 }
 
 function onDisconnect() {
+  console.log('Player disconnected');
   game.removePlayer(this);
 }
