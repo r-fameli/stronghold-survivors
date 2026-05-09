@@ -23,12 +23,6 @@ const keys = {};
 
 function onKeyDown(e) {
   keys[e.key] = true;
-
-  // Toggle hitboxes with 'h' key
-  if (e.key === 'h' || e.key === 'H') {
-    toggleHitboxes();
-    console.log('Hitboxes', areHitboxesVisible() ? 'enabled' : 'disabled');
-  }
 }
 
 function onKeyUp(e) {
@@ -43,6 +37,11 @@ function update() {
   // Update target position based on input
   let dx = 0;
   let dy = 0;
+
+  if (keys['h'] || keys['H']) {
+    toggleHitboxes();
+    console.log('Hitboxes', areHitboxesVisible() ? 'enabled' : 'disabled');
+  }
 
   // WASD and Arrow key controls
   if (keys['w'] || keys['W'] || keys['ArrowUp']) dx += 1;
