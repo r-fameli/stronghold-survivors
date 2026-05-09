@@ -6,9 +6,6 @@ import { updateDirection } from './networking';
 
 const Constants = require('../shared/constants');
 
-// Get canvas and context
-const canvas = document.getElementById('game-canvas');
-
 // The position we've told the server we're at
 let lastPosition = { x: 0, y: 0 };
 
@@ -23,14 +20,6 @@ let lastServerUpdate = Date.now();
 
 // The current input state
 const keys = {};
-
-// Whether we're capturing input or not
-let capturingKeyInput = false;
-
-// Handle keyup events
-window.addEventListener('keyup', (e) => {
-  keys[e.key] = false;
-});
 
 function onKeyDown(e) {
   keys[e.key] = true;
@@ -95,16 +84,6 @@ function update() {
   }
 }
 
-// Get the current interpolated position
-function getPosition() {
-  return lastPosition;
-}
-
-// Get the current direction
-function getDirection() {
-  return direction;
-}
-
 // Reset the input state
 function reset() {
   lastPosition = { x: 0, y: 0 };
@@ -126,7 +105,5 @@ export function stopCapturingInput() {
 
 export default {
   update,
-  getPosition,
-  getDirection,
   reset,
 };
