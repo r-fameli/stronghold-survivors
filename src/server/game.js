@@ -1,20 +1,19 @@
 const Constants = require("../shared/constants");
 const Player = require("./player");
-const Castle = require("./castle");
+const Portal = require("./portal");
 const applyCollisions = require("./collisions");
 
 class Game {
   constructor() {
     this.sockets = {};
     this.players = {};
-    this.castles = [];
+    this.portals = [];
     this.bullets = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
-    setInterval(this.update.bind(this), 1000 / 60); // Update every second
+    setInterval(this.update.bind(this), 1000 / 60);
     
-    // Add castle in the center of the map
-    this.castles.push(new Castle('castle', Constants.MAP_SIZE / 2, Constants.MAP_SIZE / 2));
+    this.portals.push(new Portal('portal', Constants.MAP_SIZE / 2, Constants.MAP_SIZE / 2));
   }
 
   addPlayer(socket, username) {
@@ -78,7 +77,7 @@ class Game {
     const destroyedBullets = applyCollisions(
       Object.values(this.players),
       this.bullets,
-      this.castles,
+      this.portals,
     );
     destroyedBullets.forEach((b) => {
       if (this.players[b.parentID]) {
@@ -129,7 +128,7 @@ class Game {
       me: player.serializeForUpdate(),
       others: nearbyPlayers.map((p) => p.serializeForUpdate()),
       bullets: nearbyBullets.map((b) => b.serializeForUpdate()),
-      castles: this.castles.map((c) => c.serializeForUpdate()),
+      portals: this.portals.map((p) => p.serializeForUpdate()),
       
     };
   }

@@ -1,10 +1,10 @@
 const ObjectClass = require('./object');
 const Constants = require('../shared/constants');
 
-class Castle extends ObjectClass {
+class Portal extends ObjectClass {
   constructor(id, x, y) {
     super(id, x, y, 0, 0);
-    this.radius = 100; // Castle hitbox radius
+    this.radius = 100;
   }
 
   serializeForUpdate() {
@@ -17,4 +17,4 @@ class Castle extends ObjectClass {
   }
 }
 
-module.exports = Castle;
+module.exports = Portal;

@@ -47,7 +47,7 @@ function getBaseUpdate() {
   return -1;
 }
 
-// Returns { me, others, bullets, castles }
+// Returns { me, others, bullets, portals }
 export function getCurrentState() {
   if (!firstServerTimestamp) {
     return {};
@@ -64,7 +64,7 @@ export function getCurrentState() {
       me: latestUpdate.me,
       others: latestUpdate.others || [],
       bullets: latestUpdate.bullets || [],
-      castles: latestUpdate.castles || [],
+      portals: latestUpdate.portals || [],
     };
   } else {
     const baseUpdate = gameUpdates[base];
@@ -74,7 +74,7 @@ export function getCurrentState() {
       me: interpolateObject(baseUpdate.me, next.me, ratio),
       others: interpolateObjectArray(baseUpdate.others || [], next.others || [], ratio),
       bullets: interpolateObjectArray(baseUpdate.bullets || [], next.bullets || [], ratio),
-      castles: next.castles || [],
+      portals: next.portals || [],
     };
   }
 }

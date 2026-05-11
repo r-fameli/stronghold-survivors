@@ -1,7 +1,7 @@
 const Constants = require('../shared/constants');
 
 // Returns an array of bullets to be destroyed.
-function applyCollisions(players, bullets, castles) {
+function applyCollisions(players, bullets, portals) {
   const destroyedBullets = [];
   
   // Bullet-player collisions
@@ -20,19 +20,17 @@ function applyCollisions(players, bullets, castles) {
     }
   }
   
-  // Player-castle collisions (prevent movement into castle)
   for (let i = 0; i < players.length; i++) {
-    for (let j = 0; j < castles.length; j++) {
+    for (let j = 0; j < portals.length; j++) {
       const player = players[i];
-      const castle = castles[j];
-      const distance = player.distanceTo(castle);
+      const portal = portals[j];
+      const distance = player.distanceTo(portal);
       
-      if (distance < Constants.PLAYER_RADIUS + castle.radius) {
-        // Push player away from castle
-        const angle = Math.atan2(player.y - castle.y, player.x - castle.x);
-        const targetDistance = Constants.PLAYER_RADIUS + castle.radius;
-        player.x = castle.x + Math.cos(angle) * targetDistance;
-        player.y = castle.y + Math.sin(angle) * targetDistance;
+      if (distance < Constants.PLAYER_RADIUS + portal.radius) {
+        const angle = Math.atan2(player.y - portal.y, player.x - portal.x);
+        const targetDistance = Constants.PLAYER_RADIUS + portal.radius;
+        player.x = portal.x + Math.cos(angle) * targetDistance;
+        player.y = portal.y + Math.sin(angle) * targetDistance;
       }
     }
   }

@@ -108,7 +108,7 @@ function reset() {
   lastPosition = { x: 0, y: 0 };
   targetPosition = { x: 0, y: 0 };
   direction = 0;
-  lastServerUpdate = Date.now;
+  lastServerUpdate = Date.now();
 }
 
 export function startCapturingInput() {

@@ -31,7 +31,7 @@ function render() {
   // Update input state before rendering
   input.update();
   
-  const { me, others, bullets, castles } = getCurrentState();
+  const { me, others, bullets, portals } = getCurrentState();
   if (me) {
     // Draw background
     renderBackground(me.x, me.y);
@@ -41,9 +41,8 @@ function render() {
     context.lineWidth = 1;
     context.strokeRect(canvas.width / 2 - me.x, canvas.height / 2 - me.y, MAP_SIZE, MAP_SIZE);
 
-    // Draw all castles
-    if (castles) {
-      castles.forEach(renderCastle.bind(null, me));
+    if (portals) {
+      portals.forEach(renderPortal.bind(null, me));
     }
 
     // Draw all bullets
@@ -55,15 +54,15 @@ function render() {
 
     // Draw hitboxes if enabled
     if (showHitboxes) {
-      if (castles) {
-        castles.forEach(renderHitbox.bind(null, me));
+      if (portals) {
+        portals.forEach(renderHitbox.bind(null, me));
       }
       others.forEach(renderHitbox.bind(null, me));
       renderHitbox(me, me);
     }
 
     // Draw minimap
-    renderMinimap(me, others, castles);
+    renderMinimap(me, others, portals);
   }
 
   // Rerun this render function on the next frame
@@ -109,12 +108,11 @@ function renderPlayer(me, player) {
   
 }
 
-function renderCastle(me, castle) {
-  const { x, y } = castle;
+function renderPortal(me, portal) {
+  const { x, y } = portal;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
-  // Draw castle
   context.drawImage(
     getAsset('portal.png'),
     canvasX - 100,
@@ -154,7 +152,7 @@ function renderBullet(me, bullet) {
   );
 }
 
-function renderMinimap(me, others, castles) {
+function renderMinimap(me, others, portals) {
   const minimapSize = 150;
   const minimapX = canvas.width - minimapSize - 10;
   const minimapY = canvas.height - minimapSize - 10;
@@ -169,8 +167,7 @@ function renderMinimap(me, others, castles) {
   context.lineWidth = 2;
   context.strokeRect(minimapX, minimapY, minimapSize, minimapSize);
 
-  // Draw castle in center of minimap
-  if (castles && castles.length > 0) {
+  if (portals && portals.length > 0) {
     context.fillStyle = 'blue';
     context.beginPath();
     context.arc(
