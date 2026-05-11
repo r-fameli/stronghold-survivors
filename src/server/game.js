@@ -124,16 +124,12 @@ class Game {
     const nearbyBullets = this.bullets.filter(
       (b) => b.distanceTo(player) <= Constants.MAP_SIZE / 2,
     );
-    const nearbyCastles = this.castles.filter(
-      (c) => c.distanceTo(player) <= Constants.MAP_SIZE / 2,
-    );
-
     return {
       t: Date.now(),
       me: player.serializeForUpdate(),
       others: nearbyPlayers.map((p) => p.serializeForUpdate()),
       bullets: nearbyBullets.map((b) => b.serializeForUpdate()),
-      castles: nearbyCastles.map((c) => c.serializeForUpdate()),
+      castles: this.castles.map((c) => c.serializeForUpdate()),
       
     };
   }
