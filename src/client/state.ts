@@ -6,6 +6,7 @@ interface ServerUpdate {
   others: PlayerState[];
   bullets: BulletState[];
   portals: PortalState[];
+  angels: AngelState[];
 }
 
 interface PlayerState {
@@ -29,11 +30,22 @@ interface PortalState {
   radius: number;
 }
 
+interface AngelState {
+  id: string;
+  x: number;
+  y: number;
+  direction: number;
+  hp: number;
+  maxHp: number;
+  radius: number;
+}
+
 interface GameState {
   me?: PlayerState;
   others?: PlayerState[];
   bullets?: BulletState[];
   portals?: PortalState[];
+  angels?: AngelState[];
 }
 
 const gameUpdates: ServerUpdate[] = [];
@@ -87,6 +99,7 @@ export function getCurrentState(): GameState {
       others: latestUpdate.others || [],
       bullets: latestUpdate.bullets || [],
       portals: latestUpdate.portals || [],
+      angels: latestUpdate.angels || [],
     };
   } else {
     const baseUpdate = gameUpdates[base];
@@ -97,6 +110,7 @@ export function getCurrentState(): GameState {
       others: interpolateObjectArray(baseUpdate.others || [], next.others || [], ratio),
       bullets: interpolateObjectArray(baseUpdate.bullets || [], next.bullets || [], ratio),
       portals: next.portals || [],
+      angels: interpolateObjectArray(baseUpdate.angels || [], next.angels || [], ratio),
     };
   }
 }

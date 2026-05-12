@@ -1,0 +1,13 @@
+export interface MobConfig {
+    BASE_HEALTH: number;
+    BASE_SPEED: number;
+    BASE_RADIUS: number;
+    BASE_SPAWN_INTERVAL: number;
+}
+
+export const ANGEL: MobConfig = {
+    BASE_HEALTH: 100,
+    BASE_SPEED: 50,
+    BASE_RADIUS: 20,
+    BASE_SPAWN_INTERVAL: 1,
+};

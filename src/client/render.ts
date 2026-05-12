@@ -12,8 +12,6 @@ const context = canvas.getContext('2d')!;
 setCanvasDimensions();
 
 function setCanvasDimensions() {
-  // On small screens (e.g. phones), we want to "zoom out" so players can still see at least
-  // 800 in-game units of width.
   const scaleRatio = Math.max(1, 800 / window.innerWidth);
   canvas.width = scaleRatio * window.innerWidth;
   canvas.height = scaleRatio * window.innerHeight;
@@ -27,7 +25,7 @@ let showHitboxes = false;
 function render() {
   input.update();
 
-  const { me, others, bullets, portals } = getCurrentState();
+  const { me, others, bullets, portals, angels } = getCurrentState();
   if (me) {
     renderBackground(me.x, me.y);
 
@@ -44,6 +42,10 @@ function render() {
     renderPlayer(me, me);
     others!.forEach(renderPlayer.bind(null, me));
 
+    if (angels) {
+      angels.forEach(renderAngel.bind(null, me));
+    }
+
     if (showHitboxes) {
       if (portals) {
         portals.forEach(renderHitbox.bind(null, me));
@@ -52,7 +54,7 @@ function render() {
       renderHitbox(me, me);
     }
 
-    renderMinimap(me, others!, portals!);
+    renderMinimap(me, others!, portals!, angels!);
   }
 
   animationFrameRequestId = requestAnimationFrame(render);
@@ -80,6 +82,8 @@ interface RenderObject {
   y: number;
   direction?: number;
   radius?: number;
+  hp?: number;
+  maxHp?: number;
 }
 
 function renderPlayer(me: RenderObject, player: RenderObject) {
@@ -114,6 +118,41 @@ function renderPortal(me: RenderObject, portal: RenderObject) {
   );
 }
 
+function renderAngel(me: RenderObject, angel: RenderObject) {
+  const { x, y, direction, hp, maxHp, radius } = angel;
+  const r = radius || 20;
+  const canvasX = canvas.width / 2 + x - me.x;
+  const canvasY = canvas.height / 2 + y - me.y;
+
+  context.save();
+  context.translate(canvasX, canvasY);
+  context.rotate(direction!);
+  context.drawImage(
+    getAsset('angel.png'),
+    -r,
+    -r,
+    r * 2,
+    r * 2,
+  );
+  context.restore();
+
+  // HP bar
+  const barWidth = 40;
+  const barHeight = 5;
+  const barX = canvasX - barWidth / 2;
+  const barY = canvasY - r - 10;
+
+  context.fillStyle = '#333';
+  context.fillRect(barX, barY, barWidth, barHeight);
+
+  context.fillStyle = '#e74c3c';
+  context.fillRect(barX, barY, barWidth, barHeight);
+
+  const hpRatio = Math.max(0, (hp || 0) / (maxHp || 1));
+  context.fillStyle = '#2ecc71';
+  context.fillRect(barX, barY, barWidth * hpRatio, barHeight);
+}
+
 function renderHitbox(me: RenderObject, object: RenderObject) {
   const { x, y } = object;
   let radius = PLAYER_RADIUS;
@@ -143,7 +182,7 @@ function renderBullet(me: RenderObject, bullet: RenderObject) {
   );
 }
 
-function renderMinimap(me: RenderObject, others: RenderObject[], portals: RenderObject[]) {
+function renderMinimap(me: RenderObject, others: RenderObject[], portals: RenderObject[], angels: RenderObject[]) {
   const minimapSize = 150;
   const minimapX = canvas.width - minimapSize - 10;
   const minimapY = canvas.height - minimapSize - 10;
@@ -178,6 +217,17 @@ function renderMinimap(me: RenderObject, others: RenderObject[], portals: Render
     context.arc(minimapPlayerX, minimapPlayerY, 2, 0, 2 * Math.PI);
     context.fill();
   });
+
+  if (angels) {
+    angels.forEach(angel => {
+      const minimapAngelX = minimapX + angel.x * scale;
+      const minimapAngelY = minimapY + angel.y * scale;
+      context.fillStyle = 'yellow';
+      context.beginPath();
+      context.arc(minimapAngelX, minimapAngelY, 2, 0, 2 * Math.PI);
+      context.fill();
+    });
+  }
 
   const minimapPlayerX = minimapX + me.x * scale;
   const minimapPlayerY = minimapY + me.y * scale;

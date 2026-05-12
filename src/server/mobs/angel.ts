@@ -1,0 +1,10 @@
+import Mob from "./mob";
+import { ANGEL } from "./mob-configs";
+
+class Angel extends Mob {
+  constructor(id: string, x: number, y: number, targetX: number, targetY: number) {
+    super(id, x, y, targetX, targetY, ANGEL);
+  }
+}
+
+export default Angel;
