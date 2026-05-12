@@ -4,7 +4,7 @@ import Portal from "./portal";
 import Bullet from "./bullet";
 import Angel from "./mobs/angel";
 import Turret from "./weapons/turret";
-import { TurretConfig } from "./weapons/weapon-configs";
+import { BasicTurretConfig } from "./weapons/weapon-configs";
 import { ANGEL as ANGEL_CONFIG } from "./mobs/mob-configs";
 import applyCollisions from "./collisions";
 
@@ -117,24 +117,24 @@ class Game {
 
       player.turretCooldown -= dt * 1000;
       if (player.turretCooldown <= 0) {
-        const offset = Constants.PLAYER_RADIUS + TurretConfig.RADIUS + 10;
+        const offset = Constants.PLAYER_RADIUS + BasicTurretConfig.RADIUS + 10;
         const tx = player.x + Math.cos(player.direction) * offset;
         const ty = player.y + Math.sin(player.direction) * offset;
 
         const blocked = this.turrets.some(t => {
           const dx = t.x - tx;
           const dy = t.y - ty;
-          return (dx * dx + dy * dy) < (TurretConfig.RADIUS * 2) ** 2;
+          return (dx * dx + dy * dy) < (BasicTurretConfig.RADIUS * 2) ** 2;
         });
 
         if (!blocked) {
-          player.turretCooldown += TurretConfig.COOLDOWN;
+          player.turretCooldown += BasicTurretConfig.COOLDOWN;
           player.turretIdCounter++;
           this.turrets.push(new Turret(
             `${player.id}_turret_${player.turretIdCounter}`,
             tx, ty,
             player.direction,
-            TurretConfig,
+            BasicTurretConfig,
           ));
         }
         // If blocked, cooldown stays <= 0 — retries next tick when space clears
@@ -146,6 +146,28 @@ class Game {
 
     // Remove expired turrets
     this.turrets = this.turrets.filter(t => !t.update(dt));
+
+    // Turrets fire at nearby angels
+    this.turrets.forEach(turret => {
+      turret.fireCooldown -= dt * 1000;
+      if (turret.fireCooldown <= 0) {
+        let closest: Angel | null = null;
+        let closestDist = turret.attackRadius;
+        for (const angel of this.angels) {
+          if (angel.hp <= 0) continue;
+          const d = turret.distanceTo(angel);
+          if (d < closestDist) {
+            closestDist = d;
+            closest = angel;
+          }
+        }
+        if (closest) {
+          turret.fireCooldown += turret.fireCdInterval;
+          const dir = Math.atan2(closest.y - turret.y, closest.x - turret.x);
+          this.bullets.push(new Bullet(turret.id, turret.x, turret.y, dir, 50));
+        }
+      }
+    });
 
     // Apply collisions
     const destroyedBullets = applyCollisions(

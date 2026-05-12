@@ -4,10 +4,12 @@ import Constants from '../shared/constants';
 
 class Bullet extends GameObject {
   parentID: string;
+  damage: number;
 
-  constructor(parentID: string, x: number, y: number, dir: number) {
+  constructor(parentID: string, x: number, y: number, dir: number, damage: number = Constants.BULLET_DAMAGE) {
     super(shortid(), x, y, dir, Constants.BULLET_SPEED);
     this.parentID = parentID;
+    this.damage = damage;
   }
 
   update(dt: number): boolean {

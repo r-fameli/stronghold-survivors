@@ -6,6 +6,7 @@ interface Collidable {
   x: number;
   y: number;
   radius?: number;
+  damage?: number;
   distanceTo: (obj: Collidable) => number;
   takeDamage?: (amount: number) => void;
 }
@@ -29,7 +30,7 @@ function applyCollisions(
         angel.distanceTo(bullet) <= (angel.radius || 20) + Constants.BULLET_RADIUS
       ) {
         destroyedBullets.push(bullet);
-        angel.takeDamage!(Constants.BULLET_DAMAGE);
+        angel.takeDamage!(bullet.damage || Constants.BULLET_DAMAGE);
         break;
       }
     }
