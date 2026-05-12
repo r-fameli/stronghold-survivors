@@ -4,6 +4,7 @@ const ASSET_NAMES = [
   'player.png',
   'angel.png',
   'turret-base.png',
+  'turret-head.png',
 ];
 
 const assets: Record<string, HTMLImageElement> = {};

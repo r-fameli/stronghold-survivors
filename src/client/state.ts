@@ -48,6 +48,7 @@ interface TurretState {
   direction: number;
   radius: number;
   remainingRatio: number;
+  aimDirection: number;
 }
 
 interface GameState {

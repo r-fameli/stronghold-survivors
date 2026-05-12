@@ -147,25 +147,26 @@ class Game {
     // Remove expired turrets
     this.turrets = this.turrets.filter(t => !t.update(dt));
 
-    // Turrets fire at nearby angels
+    // Turrets aim at closest angel + fire
     this.turrets.forEach(turret => {
+      let closest: Angel | null = null;
+      let closestDist = turret.attackRadius;
+      for (const angel of this.angels) {
+        if (angel.hp <= 0) continue;
+        const d = turret.distanceTo(angel);
+        if (d <= closestDist) {
+          closestDist = d;
+          closest = angel;
+        }
+      }
+      turret.aimDirection = closest
+        ? Math.atan2(closest.y - turret.y, closest.x - turret.x)
+        : turret.direction;
+
       turret.fireCooldown -= dt * 1000;
-      if (turret.fireCooldown <= 0) {
-        let closest: Angel | null = null;
-        let closestDist = turret.attackRadius;
-        for (const angel of this.angels) {
-          if (angel.hp <= 0) continue;
-          const d = turret.distanceTo(angel);
-          if (d < closestDist) {
-            closestDist = d;
-            closest = angel;
-          }
-        }
-        if (closest) {
-          turret.fireCooldown += turret.fireCdInterval;
-          const dir = Math.atan2(closest.y - turret.y, closest.x - turret.x);
-          this.bullets.push(new Bullet(turret.id, turret.x, turret.y, dir, 50));
-        }
+      if (closest && turret.fireCooldown <= 0) {
+        turret.fireCooldown += turret.fireCdInterval;
+        this.bullets.push(new Bullet(turret.id, turret.x, turret.y, turret.aimDirection, 50));
       }
     });
 

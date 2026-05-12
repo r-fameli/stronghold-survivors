@@ -89,6 +89,7 @@ interface RenderObject {
   hp?: number;
   maxHp?: number;
   remainingRatio?: number;
+  aimDirection?: number;
 }
 
 function renderPlayer(me: RenderObject, player: RenderObject) {
@@ -124,16 +125,30 @@ function renderPortal(me: RenderObject, portal: RenderObject) {
 }
 
 function renderTurret(me: RenderObject, turret: RenderObject) {
-  const { x, y, direction, radius, remainingRatio } = turret;
+  const { x, y, direction, radius, remainingRatio, aimDirection } = turret;
   const r = radius || 20;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
+  // Base
   context.save();
   context.translate(canvasX, canvasY);
   context.rotate(direction!);
   context.drawImage(
     getAsset('turret-base.png'),
+    -r,
+    -r,
+    r * 2,
+    r * 2,
+  );
+  context.restore();
+
+  // Head — sprite faces right, game angle convention (0 = right)
+  context.save();
+  context.translate(canvasX, canvasY);
+  context.rotate(aimDirection || 0);
+  context.drawImage(
+    getAsset('turret-head.png'),
     -r,
     -r,
     r * 2,

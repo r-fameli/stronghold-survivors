@@ -8,6 +8,7 @@ class Turret extends GameObject {
   fireCooldown: number;
   attackRadius: number;
   fireCdInterval: number;
+  aimDirection: number;
 
   constructor(id: string, x: number, y: number, dir: number, config: TurretConfig) {
     super(id, x, y, dir, 0);
@@ -18,6 +19,7 @@ class Turret extends GameObject {
     this.fireCooldown = 0;
     this.attackRadius = config.ATTACK_RADIUS;
     this.fireCdInterval = config.FIRE_COOLDOWN;
+    this.aimDirection = dir;
   }
 
   update(dt: number): boolean {
@@ -30,6 +32,7 @@ class Turret extends GameObject {
       direction: this.direction,
       radius: this.radius,
       remainingRatio: Math.max(0, 1 - (Date.now() - this.spawnTime) / this.duration),
+      aimDirection: this.aimDirection,
     };
   }
 }
