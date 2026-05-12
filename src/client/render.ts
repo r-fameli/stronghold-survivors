@@ -25,7 +25,7 @@ let showHitboxes = false;
 function render() {
   input.update();
 
-  const { me, others, bullets, portals, angels } = getCurrentState();
+  const { me, others, bullets, portals, angels, turrets } = getCurrentState();
   if (me) {
     renderBackground(me.x, me.y);
 
@@ -35,6 +35,10 @@ function render() {
 
     if (portals) {
       portals.forEach(renderPortal.bind(null, me));
+    }
+
+    if (turrets) {
+      turrets.forEach(renderTurret.bind(null, me));
     }
 
     bullets!.forEach(renderBullet.bind(null, me));
@@ -116,6 +120,25 @@ function renderPortal(me: RenderObject, portal: RenderObject) {
     200,
     200,
   );
+}
+
+function renderTurret(me: RenderObject, turret: RenderObject) {
+  const { x, y, direction, radius } = turret;
+  const r = radius || 20;
+  const canvasX = canvas.width / 2 + x - me.x;
+  const canvasY = canvas.height / 2 + y - me.y;
+
+  context.save();
+  context.translate(canvasX, canvasY);
+  context.rotate(direction!);
+  context.drawImage(
+    getAsset('turret-base.png'),
+    -r,
+    -r,
+    r * 2,
+    r * 2,
+  );
+  context.restore();
 }
 
 function renderAngel(me: RenderObject, angel: RenderObject) {

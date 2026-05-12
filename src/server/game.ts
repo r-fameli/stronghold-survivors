@@ -3,6 +3,7 @@ import Player from "./player";
 import Portal from "./portal";
 import Bullet from "./bullet";
 import Angel from "./mobs/angel";
+import Turret from "./weapons/turret";
 import { ANGEL as ANGEL_CONFIG } from "./mobs/mob-configs";
 import applyCollisions from "./collisions";
 
@@ -23,6 +24,7 @@ class Game {
   portals: Portal[];
   bullets: Bullet[];
   angels: Angel[];
+  turrets: Turret[];
   lastUpdateTime: number;
   shouldSendUpdate: boolean;
   angelSpawnTimer: number;
@@ -34,6 +36,7 @@ class Game {
     this.portals = [];
     this.bullets = [];
     this.angels = [];
+    this.turrets = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
     this.angelSpawnTimer = 0;
@@ -106,14 +109,20 @@ class Game {
       (bullet) => !bulletsToRemove.includes(bullet),
     );
 
-    // Update players
+    // Update players — collect turrets they place
     Object.keys(this.sockets).forEach((playerID) => {
       const player = this.players[playerID];
-      player.update(dt);
+      const turret = player.update(dt);
+      if (turret) {
+        this.turrets.push(turret);
+      }
     });
 
     // Update angels — remove those that reached portal
     this.angels = this.angels.filter(angel => !angel.update(dt));
+
+    // Remove expired turrets
+    this.turrets = this.turrets.filter(t => !t.update(dt));
 
     // Apply collisions
     const destroyedBullets = applyCollisions(
@@ -155,6 +164,9 @@ class Game {
     const nearbyAngels = this.angels.filter(
       (a) => a.distanceTo(player) <= Constants.MAP_SIZE / 2,
     );
+    const nearbyTurrets = this.turrets.filter(
+      (t) => t.distanceTo(player) <= Constants.MAP_SIZE / 2,
+    );
     return {
       t: Date.now(),
       me: player.serializeForUpdate(),
@@ -162,6 +174,7 @@ class Game {
       bullets: nearbyBullets.map((b) => b.serializeForUpdate()),
       portals: this.portals.map((p) => p.serializeForUpdate()),
       angels: nearbyAngels.map((a) => a.serializeForUpdate()),
+      turrets: nearbyTurrets.map((t) => t.serializeForUpdate()),
     };
   }
 }
