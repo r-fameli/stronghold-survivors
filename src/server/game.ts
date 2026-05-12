@@ -4,6 +4,7 @@ import Portal from "./portal";
 import Bullet from "./bullet";
 import Angel from "./mobs/angel";
 import Turret from "./weapons/turret";
+import { TurretConfig } from "./weapons/weapon-configs";
 import { ANGEL as ANGEL_CONFIG } from "./mobs/mob-configs";
 import applyCollisions from "./collisions";
 
@@ -109,12 +110,34 @@ class Game {
       (bullet) => !bulletsToRemove.includes(bullet),
     );
 
-    // Update players — collect turrets they place
+    // Update players — place turrets on cooldown
     Object.keys(this.sockets).forEach((playerID) => {
       const player = this.players[playerID];
-      const turret = player.update(dt);
-      if (turret) {
-        this.turrets.push(turret);
+      player.update(dt);
+
+      player.turretCooldown -= dt * 1000;
+      if (player.turretCooldown <= 0) {
+        const offset = Constants.PLAYER_RADIUS + TurretConfig.RADIUS + 10;
+        const tx = player.x + Math.cos(player.direction) * offset;
+        const ty = player.y + Math.sin(player.direction) * offset;
+
+        const blocked = this.turrets.some(t => {
+          const dx = t.x - tx;
+          const dy = t.y - ty;
+          return (dx * dx + dy * dy) < (TurretConfig.RADIUS * 2) ** 2;
+        });
+
+        if (!blocked) {
+          player.turretCooldown += TurretConfig.COOLDOWN;
+          player.turretIdCounter++;
+          this.turrets.push(new Turret(
+            `${player.id}_turret_${player.turretIdCounter}`,
+            tx, ty,
+            player.direction,
+            TurretConfig,
+          ));
+        }
+        // If blocked, cooldown stays <= 0 — retries next tick when space clears
       }
     });
 

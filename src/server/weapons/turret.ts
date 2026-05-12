@@ -23,6 +23,7 @@ class Turret extends GameObject {
       ...super.serializeForUpdate(),
       direction: this.direction,
       radius: this.radius,
+      remainingRatio: Math.max(0, 1 - (Date.now() - this.spawnTime) / this.duration),
     };
   }
 }

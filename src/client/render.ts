@@ -88,6 +88,7 @@ interface RenderObject {
   radius?: number;
   hp?: number;
   maxHp?: number;
+  remainingRatio?: number;
 }
 
 function renderPlayer(me: RenderObject, player: RenderObject) {
@@ -123,7 +124,7 @@ function renderPortal(me: RenderObject, portal: RenderObject) {
 }
 
 function renderTurret(me: RenderObject, turret: RenderObject) {
-  const { x, y, direction, radius } = turret;
+  const { x, y, direction, radius, remainingRatio } = turret;
   const r = radius || 20;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
@@ -139,6 +140,18 @@ function renderTurret(me: RenderObject, turret: RenderObject) {
     r * 2,
   );
   context.restore();
+
+  // Duration bar
+  const barWidth = 30;
+  const barHeight = 4;
+  const barX = canvasX - barWidth / 2;
+  const barY = canvasY + r + 5;
+
+  context.fillStyle = '#333';
+  context.fillRect(barX, barY, barWidth, barHeight);
+
+  context.fillStyle = '#3498db';
+  context.fillRect(barX, barY, barWidth * (remainingRatio || 0), barHeight);
 }
 
 function renderAngel(me: RenderObject, angel: RenderObject) {
@@ -159,11 +172,11 @@ function renderAngel(me: RenderObject, angel: RenderObject) {
   );
   context.restore();
 
-  // HP bar
+  // HP bar below angel
   const barWidth = 40;
   const barHeight = 5;
   const barX = canvasX - barWidth / 2;
-  const barY = canvasY - r - 10;
+  const barY = canvasY + r + 5;
 
   context.fillStyle = '#333';
   context.fillRect(barX, barY, barWidth, barHeight);
