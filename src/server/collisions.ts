@@ -7,8 +7,7 @@ interface Collidable {
   y: number;
   radius?: number;
   distanceTo: (obj: Collidable) => number;
-  takeBulletDamage?: () => void;
-  hp?: number;
+  takeDamage?: (amount: number) => void;
 }
 
 function applyCollisions(
@@ -18,22 +17,6 @@ function applyCollisions(
   angels: Collidable[],
 ): Collidable[] {
   const destroyedBullets: Collidable[] = [];
-
-  // Bullet vs players
-  for (let i = 0; i < bullets.length; i++) {
-    for (let j = 0; j < players.length; j++) {
-      const bullet = bullets[i];
-      const player = players[j];
-      if (
-        bullet.parentID !== player.id &&
-        player.distanceTo(bullet) <= Constants.PLAYER_RADIUS + Constants.BULLET_RADIUS
-      ) {
-        destroyedBullets.push(bullet);
-        player.takeBulletDamage!();
-        break;
-      }
-    }
-  }
 
   // Bullet vs angels
   for (let i = 0; i < bullets.length; i++) {
@@ -46,7 +29,7 @@ function applyCollisions(
         angel.distanceTo(bullet) <= (angel.radius || 20) + Constants.BULLET_RADIUS
       ) {
         destroyedBullets.push(bullet);
-        angel.takeBulletDamage!();
+        angel.takeDamage!(Constants.BULLET_DAMAGE);
         break;
       }
     }

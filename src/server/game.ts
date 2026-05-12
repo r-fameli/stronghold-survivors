@@ -125,26 +125,9 @@ class Game {
 
     // Remove angels killed by bullets
     this.angels = this.angels.filter(angel => angel.hp > 0);
-
-    // Score for bullet hits on angels
-    destroyedBullets.forEach((b) => {
-      if (this.players[b.parentID!]) {
-        this.players[b.parentID!].onDealtDamage();
-      }
-    });
     this.bullets = this.bullets.filter(
       (bullet) => !destroyedBullets.includes(bullet),
     );
-
-    // Check dead players
-    Object.keys(this.sockets).forEach((playerID) => {
-      const socket = this.sockets[playerID];
-      const player = this.players[playerID];
-      if (player.hp <= 0) {
-        socket.emit(Constants.MSG_TYPES.GAME_OVER);
-        this.removePlayer(socket);
-      }
-    });
 
     // Send game updates
     if (this.shouldSendUpdate) {

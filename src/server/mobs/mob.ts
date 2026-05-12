@@ -1,5 +1,4 @@
 import GameObject from "../object";
-import Constants from "../../shared/constants";
 import { MobConfig } from "./mob-configs";
 
 class Mob extends GameObject {
@@ -27,8 +26,8 @@ class Mob extends GameObject {
     return (dx * dx + dy * dy) < 400;
   }
 
-  takeBulletDamage() {
-    this.hp -= Constants.BULLET_DAMAGE;
+  takeDamage(amount: number) {
+    this.hp -= amount;
   }
 
   serializeForUpdate() {

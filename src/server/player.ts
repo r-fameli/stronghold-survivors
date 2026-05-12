@@ -21,14 +21,6 @@ class Player extends GameObject {
     return null;
   }
 
-  takeBulletDamage() {
-    this.hp -= Constants.BULLET_DAMAGE;
-  }
-
-  onDealtDamage() {
-    this.score += Constants.SCORE_BULLET_HIT;
-  }
-
   serializeForUpdate() {
     return {
       ...super.serializeForUpdate(),

@@ -6,7 +6,6 @@ interface ConstantsType {
   BULLET_RADIUS: number;
   BULLET_SPEED: number;
   BULLET_DAMAGE: number;
-  SCORE_BULLET_HIT: number;
   SCORE_PER_SECOND: number;
   MAP_SIZE: number;
   MSG_TYPES: {
@@ -25,7 +24,6 @@ const Constants: ConstantsType = Object.freeze({
   BULLET_RADIUS: 3,
   BULLET_SPEED: 800,
   BULLET_DAMAGE: 10,
-  SCORE_BULLET_HIT: 20,
   SCORE_PER_SECOND: 1,
   MAP_SIZE: 3000,
   MSG_TYPES: {
