@@ -136,8 +136,11 @@ class Game {
             player.direction,
             BasicTurretConfig,
           ));
+        } else {
+          // Blocked — reset cooldown to 0 so it pauses instead of
+          // accumulating negative time that triggers a burst when space clears.
+          player.turretCooldown = 0;
         }
-        // If blocked, cooldown stays <= 0 — retries next tick when space clears
       }
     });
 
