@@ -48,7 +48,7 @@ function forEachNearby<T extends { x: number; y: number }>(
 function render() {
   input.update();
 
-  const { me, others, bullets, portals, angels, turrets } = getCurrentState();
+  const { me, others, bullets, portals, angels, turrets, expOrbs } = getCurrentState();
   if (me) {
     renderBackground(me.x, me.y);
 
@@ -67,6 +67,7 @@ function render() {
     forEachNearby(me, others, renderPlayer);
 
     forEachNearby(me, angels, renderAngel);
+    forEachNearby(me, expOrbs, renderExpOrb);
 
     if (showHitboxes) {
       forEachNearby(me, portals, renderHitbox);
@@ -218,6 +219,21 @@ function renderAngel(me: RenderObject, angel: RenderObject) {
   const hpRatio = Math.max(0, (hp || 0) / (maxHp || 1));
   context.fillStyle = '#2ecc71';
   context.fillRect(barX, barY, barWidth * hpRatio, barHeight);
+}
+
+function renderExpOrb(me: RenderObject, orb: RenderObject) {
+  const { x, y, radius } = orb;
+  const r = radius || 8;
+  const canvasX = canvas.width / 2 + x - me.x;
+  const canvasY = canvas.height / 2 + y - me.y;
+
+  context.drawImage(
+    getAsset('exp.png'),
+    canvasX - r,
+    canvasY - r,
+    r * 2,
+    r * 2,
+  );
 }
 
 function renderHitbox(me: RenderObject, object: RenderObject) {

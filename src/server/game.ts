@@ -4,6 +4,7 @@ import Portal from "./portal";
 import Bullet from "./bullet";
 import Angel from "./mobs/angel";
 import Turret from "./weapons/turret";
+import ExpOrb from "./exp-orb";
 import { BasicTurretConfig } from "../shared/weapon-configs";
 import { ANGEL as ANGEL_CONFIG } from "../shared/mob-configs";
 import applyCollisions from "./collisions";
@@ -26,6 +27,7 @@ class Game {
   bullets: Bullet[];
   angels: Angel[];
   turrets: Turret[];
+  expOrbs: ExpOrb[];
   lastUpdateTime: number;
   shouldSendUpdate: boolean;
   angelSpawnTimer: number;
@@ -38,6 +40,7 @@ class Game {
     this.bullets = [];
     this.angels = [];
     this.turrets = [];
+    this.expOrbs = [];
     this.lastUpdateTime = Date.now();
     this.shouldSendUpdate = false;
     this.angelSpawnTimer = 0;
@@ -181,7 +184,11 @@ class Game {
       this.angels,
     );
 
-    // Remove angels killed by bullets
+    // Remove angels killed by bullets — drop exp orb at death location
+    const deadAngels = this.angels.filter(angel => angel.hp <= 0);
+    deadAngels.forEach(angel => {
+      this.expOrbs.push(new ExpOrb(`exp_${angel.id}`, angel.x, angel.y));
+    });
     this.angels = this.angels.filter(angel => angel.hp > 0);
     this.bullets = this.bullets.filter(
       (bullet) => !destroyedBullets.includes(bullet),
@@ -212,6 +219,9 @@ class Game {
     );
     const nearbyAngels = this.angels;
     const nearbyTurrets = this.turrets;
+    const nearbyExpOrbs = this.expOrbs.filter(
+      (e) => e.distanceTo(player) <= Constants.MAP_SIZE / 2,
+    );
     return {
       t: Date.now(),
       me: player.serializeForUpdate(),
@@ -220,6 +230,7 @@ class Game {
       portals: this.portals.map((p) => p.serializeForUpdate()),
       angels: nearbyAngels.map((a) => a.serializeForUpdate()),
       turrets: nearbyTurrets.map((t) => t.serializeForUpdate()),
+      expOrbs: nearbyExpOrbs.map((e) => e.serializeForUpdate()),
     };
   }
 }

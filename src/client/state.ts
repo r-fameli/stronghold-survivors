@@ -1,5 +1,12 @@
 const RENDER_DELAY = 100;
 
+interface ExpOrbState {
+  id: string;
+  x: number;
+  y: number;
+  radius: number;
+}
+
 interface ServerUpdate {
   t: number;
   me: PlayerState;
@@ -8,6 +15,7 @@ interface ServerUpdate {
   portals: PortalState[];
   angels: AngelState[];
   turrets: TurretState[];
+  expOrbs: ExpOrbState[];
 }
 
 interface PlayerState {
@@ -58,6 +66,7 @@ interface GameState {
   portals?: PortalState[];
   angels?: AngelState[];
   turrets?: TurretState[];
+  expOrbs?: ExpOrbState[];
 }
 
 const gameUpdates: ServerUpdate[] = [];
@@ -113,6 +122,7 @@ export function getCurrentState(): GameState {
       portals: latestUpdate.portals || [],
       angels: latestUpdate.angels || [],
       turrets: latestUpdate.turrets || [],
+      expOrbs: latestUpdate.expOrbs || [],
     };
   } else {
     const baseUpdate = gameUpdates[base];
@@ -125,6 +135,7 @@ export function getCurrentState(): GameState {
       portals: next.portals || [],
       angels: interpolateObjectArray(baseUpdate.angels || [], next.angels || [], ratio),
       turrets: next.turrets || [],
+      expOrbs: next.expOrbs || [],
     };
   }
 }
