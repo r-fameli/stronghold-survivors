@@ -18,12 +18,13 @@ interface ServerUpdate {
   expOrbs: ExpOrbState[];
 }
 
-interface PlayerState {
+export interface PlayerState {
   id: string;
   x: number;
   y: number;
   direction: number;
   hp: number;
+  turretCooldown: number;
 }
 
 interface BulletState {

@@ -29,6 +29,7 @@ class Player extends GameObject {
       ...super.serializeForUpdate(),
       direction: this.direction,
       hp: this.hp,
+      turretCooldown: this.turretCooldown,
     };
   }
 }
