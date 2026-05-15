@@ -1,5 +1,5 @@
 import { connect, play } from "./networking";
-import { startRendering } from "./render";
+import { startRendering } from "./render/render";
 import { startCapturingInput } from "./input";
 import { downloadAssets } from "./assets";
 import { initState } from "./state";

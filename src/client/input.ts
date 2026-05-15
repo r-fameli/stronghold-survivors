@@ -1,5 +1,5 @@
 import { getCurrentState } from "./state";
-import { toggleHitboxes, areHitboxesVisible } from "./render";
+import { toggleHitboxes, areHitboxesVisible } from "./render/render";
 import { updateDirection } from "./networking";
 
 import Constants from "../shared/constants";
