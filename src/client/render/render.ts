@@ -10,7 +10,7 @@ import { renderPortal } from './portal';
 import { renderBullet } from './bullet';
 import { renderExpOrb } from './exp-orb';
 import { renderMinimap } from './minimap';
-import { renderTurretCooldown } from './hud';
+import { renderTurretCooldown, renderExpBar } from './hud';
 
 // ── Canvas setup ──────────────────────────────────────────
 
@@ -97,6 +97,7 @@ function render() {
 
     renderMinimap(me, others!, portals!, angels!, turrets);
     renderTurretCooldown(me);
+    renderExpBar(me);
   }
 
   animationFrameRequestId = requestAnimationFrame(render);

@@ -1,12 +1,17 @@
 import GameObject from './object';
 import Constants from '../shared/constants';
 
+const EXP_BASE_THRESHOLD = 100;
+
 class Player extends GameObject {
   username: string;
   hp: number;
   score: number;
   turretCooldown: number;
   turretIdCounter: number;
+  exp: number;
+  level: number;
+  nextLevelExp: number;
 
   constructor(id: string, username: string, x: number, y: number) {
     super(id, x, y, Math.random() * 2 * Math.PI, Constants.PLAYER_SPEED);
@@ -15,6 +20,18 @@ class Player extends GameObject {
     this.score = 0;
     this.turretCooldown = 0;
     this.turretIdCounter = 0;
+    this.exp = 0;
+    this.level = 1;
+    this.nextLevelExp = EXP_BASE_THRESHOLD;
+  }
+
+  addExp(amount: number) {
+    this.exp += amount;
+    while (this.exp >= this.nextLevelExp) {
+      this.exp -= this.nextLevelExp;
+      this.level++;
+      this.nextLevelExp = Math.floor(EXP_BASE_THRESHOLD * Math.pow(1.08, this.level - 1));
+    }
   }
 
   update(dt: number) {
@@ -30,6 +47,9 @@ class Player extends GameObject {
       direction: this.direction,
       hp: this.hp,
       turretCooldown: this.turretCooldown,
+      exp: this.exp,
+      level: this.level,
+      nextLevelExp: this.nextLevelExp,
     };
   }
 }

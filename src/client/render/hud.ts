@@ -1,11 +1,14 @@
 import { getAsset } from '../assets';
-import { context } from './common';
+import { canvas, context } from './common';
 import { BasicTurretConfig } from '../../shared/weapon-configs';
 import { PlayerState } from '../state';
 
 const BOX_SIZE = 64;
 const PADDING = 10;
 const IMAGE_SIZE = 40;
+
+const EXP_BAR_HEIGHT = 20;
+const EXP_BAR_BOTTOM = 10;
 
 export function renderTurretCooldown(me: PlayerState) {
   const x = PADDING;
@@ -29,4 +32,28 @@ export function renderTurretCooldown(me: PlayerState) {
   const img = getAsset('turret-base.png');
   const imgOffset = (BOX_SIZE - IMAGE_SIZE) / 2;
   context.drawImage(img, x + imgOffset, y + imgOffset, IMAGE_SIZE, IMAGE_SIZE);
+}
+
+export function renderExpBar(me: PlayerState) {
+  const barX = PADDING;
+  const barY = canvas.height - EXP_BAR_HEIGHT - EXP_BAR_BOTTOM;
+  const barWidth = Math.floor(canvas.width / 4);
+
+  // Background
+  context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  context.fillRect(barX, barY, barWidth, EXP_BAR_HEIGHT);
+
+  // Fill
+  const ratio = Math.min(1, me.exp / me.nextLevelExp);
+  if (ratio > 0) {
+    context.fillStyle = '#2ecc71';
+    context.fillRect(barX, barY, barWidth * ratio, EXP_BAR_HEIGHT);
+  }
+
+  // Level text
+  context.fillStyle = '#fff';
+  context.font = 'bold 14px monospace';
+  context.textAlign = 'left';
+  context.textBaseline = 'middle';
+  context.fillText(`Lvl ${me.level}`, barX + 6, barY + EXP_BAR_HEIGHT / 2);
 }

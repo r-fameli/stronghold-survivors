@@ -25,6 +25,9 @@ export interface PlayerState {
   direction: number;
   hp: number;
   turretCooldown: number;
+  exp: number;
+  level: number;
+  nextLevelExp: number;
 }
 
 interface BulletState {

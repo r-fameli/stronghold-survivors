@@ -218,6 +218,7 @@ class Game {
 
         if (orb.distanceTo(closest) < Constants.PLAYER_RADIUS) {
           consumedOrbs.push(orb);
+          closest.addExp(10);
         }
       }
     });
