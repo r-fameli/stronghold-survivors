@@ -147,8 +147,16 @@ class Game {
       }
     });
 
-    // Update angels — remove those that reached portal
-    this.angels = this.angels.filter(angel => !angel.update(dt));
+    // Update angels — damage portal when one reaches it
+    const reachedAngels: Angel[] = [];
+    this.angels = this.angels.filter(angel => {
+      const reached = angel.update(dt);
+      if (reached) reachedAngels.push(angel);
+      return !reached;
+    });
+    reachedAngels.forEach(angel => {
+      this.portals.forEach(p => p.takeDamage(angel.maxHp));
+    });
 
     // Remove expired turrets
     this.turrets = this.turrets.filter(t => !t.update(dt));
@@ -224,6 +232,12 @@ class Game {
     });
     this.expOrbs = this.expOrbs.filter(o => !consumedOrbs.includes(o));
 
+    // Check game over — portal destroyed
+    if (this.portals.some(p => p.hp <= 0)) {
+      this.endGame();
+      return;
+    }
+
     // Send game updates
     if (this.shouldSendUpdate) {
       Object.keys(this.sockets).forEach((playerID) => {
@@ -238,6 +252,27 @@ class Game {
     } else {
       this.shouldSendUpdate = true;
     }
+  }
+
+  resetGameState() {
+    this.angels = [];
+    this.bullets = [];
+    this.turrets = [];
+    this.expOrbs = [];
+    this.angelSpawnTimer = 0;
+    this.angelIdCounter = 0;
+    this.portals = [new Portal('portal', Constants.MAP_SIZE / 2, Constants.MAP_SIZE / 2)];
+    this.shouldSendUpdate = false;
+  }
+
+  endGame() {
+    // Notify all players
+    Object.values(this.sockets).forEach(socket => {
+      socket.emit(Constants.MSG_TYPES.GAME_OVER);
+    });
+    this.sockets = {};
+    this.players = {};
+    this.resetGameState();
   }
 
   createUpdate(player: Player) {

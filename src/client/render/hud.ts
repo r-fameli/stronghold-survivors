@@ -46,7 +46,7 @@ export function renderExpBar(me: PlayerState) {
   // Fill
   const ratio = Math.min(1, me.exp / me.nextLevelExp);
   if (ratio > 0) {
-    context.fillStyle = '#2ecc71';
+    context.fillStyle = '#3498db';
     context.fillRect(barX, barY, barWidth * ratio, EXP_BAR_HEIGHT);
   }
 

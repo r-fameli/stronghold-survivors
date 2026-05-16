@@ -41,6 +41,8 @@ interface PortalState {
   x: number;
   y: number;
   radius: number;
+  hp: number;
+  maxHp: number;
 }
 
 interface AngelState {

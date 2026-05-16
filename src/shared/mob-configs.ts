@@ -9,5 +9,5 @@ export const ANGEL: MobConfig = {
     BASE_HEALTH: 100,
     BASE_SPEED: 50,
     BASE_RADIUS: 20,
-    BASE_SPAWN_INTERVAL: 1,
+    BASE_SPAWN_INTERVAL: 2,
 };

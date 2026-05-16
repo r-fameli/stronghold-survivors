@@ -6,7 +6,7 @@ import { canvas, context, MAP_SIZE, RenderObject, isNear, forEachNearby } from '
 import { renderPlayer } from './player';
 import { renderAngel } from './angel';
 import { renderTurret } from './turret';
-import { renderPortal } from './portal';
+import { renderPortal, renderPortalHP } from './portal';
 import { renderBullet } from './bullet';
 import { renderExpOrb } from './exp-orb';
 import { renderMinimap } from './minimap';
@@ -98,6 +98,9 @@ function render() {
     renderMinimap(me, others!, portals!, angels!, turrets);
     renderTurretCooldown(me);
     renderExpBar(me);
+    if (portals && portals.length > 0) {
+      renderPortalHP(me, portals[0]);
+    }
   }
 
   animationFrameRequestId = requestAnimationFrame(render);
