@@ -1,4 +1,5 @@
 import { getAsset } from '../assets';
+import { DARK_GRAY, BLUE_ACCENT } from '../colors';
 import { context, worldToScreen, RenderObject } from './common';
 
 export function renderTurret(me: RenderObject, turret: RenderObject) {
@@ -38,9 +39,9 @@ export function renderTurret(me: RenderObject, turret: RenderObject) {
   const barX = canvasX - barWidth / 2;
   const barY = canvasY + r + 5;
 
-  context.fillStyle = '#333';
+  context.fillStyle = DARK_GRAY;
   context.fillRect(barX, barY, barWidth, barHeight);
 
-  context.fillStyle = '#3498db';
+  context.fillStyle = BLUE_ACCENT;
   context.fillRect(barX, barY, barWidth * (remainingRatio || 0), barHeight);
 }

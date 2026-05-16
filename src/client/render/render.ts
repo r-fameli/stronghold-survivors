@@ -3,6 +3,7 @@ import { getCurrentState } from '../state';
 import input from '../input';
 
 import { canvas, context, MAP_SIZE, RenderObject, isNear, forEachNearby } from './common';
+import { HITBOX_STROKE, CANVAS_BLACK, GRADIENT_CENTER, GRADIENT_EDGE } from '../colors';
 import { renderPlayer } from './player';
 import { renderAngel } from './angel';
 import { renderTurret } from './turret';
@@ -37,8 +38,8 @@ function renderBackground(x: number, y: number) {
     backgroundX, backgroundY, MAP_SIZE / 10,
     backgroundX, backgroundY, MAP_SIZE / 2,
   );
-  backgroundGradient.addColorStop(0, 'black');
-  backgroundGradient.addColorStop(1, 'gray');
+  backgroundGradient.addColorStop(0, GRADIENT_CENTER);
+  backgroundGradient.addColorStop(1, GRADIENT_EDGE);
   context.fillStyle = backgroundGradient;
   context.fillRect(0, 0, canvas.width, canvas.height);
 }
@@ -51,7 +52,7 @@ function renderHitbox(me: RenderObject, object: RenderObject) {
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
-  context.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+  context.strokeStyle = HITBOX_STROKE;
   context.lineWidth = 2;
   context.beginPath();
   context.arc(canvasX, canvasY, radius, 0, 2 * Math.PI);
@@ -68,7 +69,7 @@ function render() {
     renderBackground(me.x, me.y);
 
     // Map border
-    context.strokeStyle = 'black';
+    context.strokeStyle = CANVAS_BLACK;
     context.lineWidth = 1;
     context.strokeRect(
       canvas.width / 2 - me.x,

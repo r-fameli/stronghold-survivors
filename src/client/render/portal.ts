@@ -1,5 +1,6 @@
 import { getAsset } from '../assets';
 import { canvas, context, worldToScreen, RenderObject } from './common';
+import { PORTAL_BG, RED_HP, GREEN_HP, WHITE } from '../colors';
 
 export function renderPortal(me: RenderObject, portal: RenderObject) {
   const { canvasX, canvasY } = worldToScreen(me, portal);
@@ -20,18 +21,18 @@ export function renderPortalHP(me: RenderObject, portal: RenderObject) {
   const barX = (canvas.width - barWidth) / 2;
   const barY = 10;
 
-  context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  context.fillStyle = PORTAL_BG;
   context.fillRect(barX, barY, barWidth, barHeight);
 
   const ratio = Math.max(0, (portal.hp || 0) / (portal.maxHp || 1));
-  context.fillStyle = '#e74c3c';
+  context.fillStyle = RED_HP;
   context.fillRect(barX, barY, barWidth, barHeight);
 
-  context.fillStyle = '#2ecc71';
+  context.fillStyle = GREEN_HP;
   context.fillRect(barX, barY, barWidth * ratio, barHeight);
 
   // Text
-  context.fillStyle = '#fff';
+  context.fillStyle = WHITE;
   context.font = 'bold 12px monospace';
   context.textAlign = 'center';
   context.textBaseline = 'middle';

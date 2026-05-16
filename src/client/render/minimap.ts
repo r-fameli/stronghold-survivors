@@ -1,5 +1,6 @@
 import { context } from './common';
 import { MAP_SIZE, RenderObject } from './common';
+import { CANVAS_BLACK, CANVAS_WHITE, CANVAS_BLUE, CANVAS_GREEN, CANVAS_YELLOW, MINIMAP_TURRET } from '../colors';
 
 export function renderMinimap(
   me: RenderObject,
@@ -14,16 +15,16 @@ export function renderMinimap(
   const scale = minimapSize / MAP_SIZE;
 
   // Background
-  context.fillStyle = 'black';
+  context.fillStyle = CANVAS_BLACK;
   context.fillRect(minimapX, minimapY, minimapSize, minimapSize);
 
-  context.strokeStyle = 'white';
+  context.strokeStyle = CANVAS_WHITE;
   context.lineWidth = 2;
   context.strokeRect(minimapX, minimapY, minimapSize, minimapSize);
 
   // Portal
   if (portals && portals.length > 0) {
-    context.fillStyle = 'blue';
+    context.fillStyle = CANVAS_BLUE;
     context.beginPath();
     context.arc(
       minimapX + minimapSize / 2,
@@ -35,7 +36,7 @@ export function renderMinimap(
 
   // Other players
   others.forEach(player => {
-    context.fillStyle = 'green';
+    context.fillStyle = CANVAS_GREEN;
     context.beginPath();
     context.arc(
       minimapX + player.x * scale,
@@ -48,7 +49,7 @@ export function renderMinimap(
   // Angels
   if (angels) {
     angels.forEach(angel => {
-      context.fillStyle = 'yellow';
+      context.fillStyle = CANVAS_YELLOW;
       context.beginPath();
       context.arc(
         minimapX + angel.x * scale,
@@ -62,7 +63,7 @@ export function renderMinimap(
   // Turrets
   if (turrets) {
     turrets.forEach(turret => {
-      context.fillStyle = '#4488ff';
+      context.fillStyle = MINIMAP_TURRET;
       context.beginPath();
       context.arc(
         minimapX + turret.x * scale,
@@ -74,7 +75,7 @@ export function renderMinimap(
   }
 
   // Local player
-  context.fillStyle = 'white';
+  context.fillStyle = CANVAS_WHITE;
   context.beginPath();
   context.arc(
     minimapX + me.x * scale,

@@ -2,6 +2,7 @@ import { getAsset } from '../assets';
 import { canvas, context } from './common';
 import { BasicTurretConfig } from '../../shared/weapon-configs';
 import { PlayerState } from '../state';
+import { HUD_BG, COOLDOWN_TINT, BLUE_ACCENT, WHITE } from '../colors';
 
 const BOX_SIZE = 64;
 const PADDING = 10;
@@ -15,7 +16,7 @@ export function renderTurretCooldown(me: PlayerState) {
   const y = PADDING;
 
   // Box background
-  context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  context.fillStyle = HUD_BG;
   context.fillRect(x, y, BOX_SIZE, BOX_SIZE);
 
   // Cooldown progress (0 = just placed, 1 = ready)
@@ -24,7 +25,7 @@ export function renderTurretCooldown(me: PlayerState) {
   // Tint overlay — grows from bottom
   if (progress > 0) {
     const tintHeight = BOX_SIZE * progress;
-    context.fillStyle = 'rgba(52, 152, 219, 0.35)';
+    context.fillStyle = COOLDOWN_TINT;
     context.fillRect(x, y + BOX_SIZE - tintHeight, BOX_SIZE, tintHeight);
   }
 
@@ -40,18 +41,18 @@ export function renderExpBar(me: PlayerState) {
   const barWidth = Math.floor(canvas.width / 4);
 
   // Background
-  context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  context.fillStyle = HUD_BG;
   context.fillRect(barX, barY, barWidth, EXP_BAR_HEIGHT);
 
   // Fill
   const ratio = Math.min(1, me.exp / me.nextLevelExp);
   if (ratio > 0) {
-    context.fillStyle = '#3498db';
+    context.fillStyle = BLUE_ACCENT;
     context.fillRect(barX, barY, barWidth * ratio, EXP_BAR_HEIGHT);
   }
 
   // Level text
-  context.fillStyle = '#fff';
+  context.fillStyle = WHITE;
   context.font = 'bold 14px monospace';
   context.textAlign = 'left';
   context.textBaseline = 'middle';
